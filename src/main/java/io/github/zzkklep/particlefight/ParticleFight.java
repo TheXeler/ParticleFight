@@ -107,7 +107,7 @@ public class ParticleFight {
         m_logger.info("I'm serious,you should go to watch BV16b41167JX");
         m_logger.info("Start init ParticleFight plugin.");
         m_logger.info("Version:Test Version");
-        m_logger.info("UpdateDate:2021/7/13 v1");
+        m_logger.info("UpdateDate:2021/7/14 v1");
         m_logger.info("Start register command...");
         CommandSpec commandSpec_bighead = CommandSpec.builder()
                 .description(Text.of("Particle Big Head."))
@@ -212,9 +212,9 @@ public class ParticleFight {
                 .child(commandSpec_jumpattack, "jump")
                 .build();
         Sponge.getCommandManager().register(this, commandSpec_particlefight, "particlefight");
-        m_logger.info("Register complete.Start loading data.");
-        GameProfile gameProfile = GameProfile.of(UUID.fromString("45705530-7874-4155-9528-87a3f902e267"),null);
-        gameProfile.addProperty(ProfileProperty.of("textures","eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjMzNjQxMWUyMWJhNWJhZTQxZGE0ZDBkYTIzYjcxOTExOGYxYzc5YjYxYzMwYmJmMGE1YWNhZjQ1M2ExYSJ9fX0="));
+        m_logger.info("Register complete.Start loading data...");
+        GameProfile gameProfile = GameProfile.of(UUID.fromString("45705530-7874-4155-9528-87a3f902e267"), null);
+        gameProfile.addProperty(ProfileProperty.of("textures", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjMzNjQxMWUyMWJhNWJhZTQxZGE0ZDBkYTIzYjcxOTExOGYxYzc5YjYxYzMwYmJmMGE1YWNhZjQ1M2ExYSJ9fX0="));
         Sponge.getServer().getGameProfileManager().fill(gameProfile);
         try {
             Sponge.getServer().getGameProfileManager().get(UUID.fromString("45705530-7874-4155-9528-87a3f902e267")).get();
@@ -333,9 +333,11 @@ public class ParticleFight {
     //Listen lock item pick
     @Listener
     public void onChangeInventoryLockItem(ChangeInventoryEvent event) {
-        ItemStackSnapshot stack = event.getTransactions().get(0).getOriginal();
-        if (stack.get(Keys.ITEM_LORE).isPresent() && stack.get(Keys.ITEM_LORE).get().get(0).compareTo(Text.of(TextColors.BLACK, "PF_LOCKITEM")) == 0) {
-            event.setCancelled(true);
+        if (!event.getTransactions().isEmpty()) {
+            ItemStackSnapshot stack = event.getTransactions().get(0).getOriginal();
+            if (stack.get(Keys.ITEM_LORE).isPresent() && stack.get(Keys.ITEM_LORE).get().get(0).compareTo(Text.of(TextColors.BLACK, "PF_LOCKITEM")) == 0) {
+                event.setCancelled(true);
+            }
         }
     }
 
@@ -398,10 +400,9 @@ public class ParticleFight {
         }
         location.setPosition(location.getPosition().sub(offset, 0, offset));
         Collection<Entity> entities = from.getNearbyEntities(offset);
-        entities.remove(from);
+        entities.remove(from.);
         for (Entity target : entities) {
             target.damage(damage, EntityDamageSource.builder().type(DamageTypes.ATTACK).explosion().entity(from).build());
-            //from
         }
         from.getWorld().spawnParticles(ParticleEffect.builder().type(ParticleTypes.EXPLOSION).quantity(20).velocity(Vector3d.ZERO).offset(Vector3d.from(1, 0, 0)).build(), from.getPosition());
         from.getWorld().spawnParticles(ParticleEffect.builder().type(ParticleTypes.EXPLOSION).quantity(20).velocity(Vector3d.ZERO).offset(Vector3d.from(-1, 0, 0)).build(), from.getPosition());
